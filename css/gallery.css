@@ -1,4 +1,6 @@
-
+/*--------------------------------
+Products Gallery
+--------------------------------*/
 .gallery-title
 {
     font-size: 36px;
@@ -25,6 +27,7 @@
     text-align: center;
     color: #f14e95;
     margin-bottom: 30px;
+    background-color: transparent;
 
 }
 .filter-button:hover,
@@ -36,7 +39,7 @@
     text-align: center;
     color: #ffffff;
     background-color: #f14e95;
-
+    box-shadow: none;
 }
 
 .port-image
@@ -145,11 +148,13 @@ Product
 
 .gallery_products .single-product .part-2 .product-title {
     font-size: 2rem;
+    color: #828282;
 }
 
 .gallery_products .single-product .part-2 h4 {
     display: inline-block;
     font-size: 1.6rem;
+    color: #828282;
 }
 
 .gallery_products .single-product .part-2 .product-old-price {
