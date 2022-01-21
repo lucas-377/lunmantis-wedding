@@ -254,6 +254,12 @@ Gallery Filter
 $(document).ready(function () {
 
 	$(".filter-button").click(function () {
+		if ($(".filter-button").removeClass("active")) {
+			$(this).removeClass("active");
+		}
+		
+		$(this).addClass("active");
+
 		var value = $(this).attr('data-filter');
 
 		if (value == "all") {
@@ -267,10 +273,4 @@ $(document).ready(function () {
 
 		}
 	});
-
-	if ($(".filter-button").removeClass("active")) {
-		$(this).removeClass("active");
-	}
-	$(this).addClass("active");
-
 });
