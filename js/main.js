@@ -184,6 +184,28 @@
 
 	};
 
+	var showCart = function () {
+
+		$('.cart__floating').on('click', function (event) {
+
+			event.preventDefault();
+
+			return false;
+		});
+
+		$(window).scroll(function () {
+
+			var $win = $(window);
+			if ($win.scrollTop() > 200) {
+				$('.cart__floating').addClass('active');
+			} else {
+				$('.cart__floating').removeClass('active');
+			}
+
+		});
+
+	};
+
 
 	// Loading page
 	var loaderPage = function () {
@@ -227,6 +249,7 @@
 		dropdown();
 		testimonialCarousel();
 		goToTop();
+		showCart();
 		loaderPage();
 		counter();
 		counterWayPoint();
@@ -273,4 +296,14 @@ $(document).ready(function () {
 
 		}
 	});
+
+	$(".btn-add-cart").on('click', function(e){
+		e.preventDefault();
+
+		$('.cart__items').addClass('active');
+		let itemsValue = $('.cart__items').text();
+		let itemsValueNumber = parseInt(itemsValue);
+		itemsValueNumber++;
+		$('.cart__items').text(itemsValueNumber);
+	})
 });
