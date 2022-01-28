@@ -185,22 +185,9 @@
 	};
 
 	var showCart = function () {
-
-		$('.cart__floating').on('click', function (event) {
-			//@TODO
-			// Abrir modal com tabela de produtos adicionados ao carrinho
-			// Efetuar lógica para remoção de produtos do carrinho
-			// Adicionar botão finalizar pedido ao modal
-			// Efetuar lógica para passar array de produtos via WhatsApp
-
-			event.preventDefault();
-
-			return false;
-		});
-
 		$(window).scroll(function () {
-
 			var $win = $(window);
+
 			if ($win.scrollTop() > 200) {
 				$('.cart__floating').addClass('active');
 			} else {
@@ -208,7 +195,6 @@
 			}
 
 		});
-
 	};
 
 
@@ -302,6 +288,7 @@ $(document).ready(function () {
 	// Array of products in cart
 	const productsCart = [];
 
+	// Add product to cart
 	$(".btn-add-cart").on('click', function(e){
 		e.preventDefault();
 
@@ -310,6 +297,7 @@ $(document).ready(function () {
 			id: $(this).parent().parent().parent().parent().attr('data-id'),
 			name: $(this).parent().parent().parent().parent().find('.product-title').html(),
 			price: $(this).parent().parent().parent().parent().find('.product-price').html(),
+			quantity: 0,
 		};
 
 		// Validate if product is already in cart
@@ -322,9 +310,40 @@ $(document).ready(function () {
 			}
 		}
 
+		console.log(productsCart);
+
 		// Change cart button state		
 		$('.cart__items').addClass('active');
 		let itemsValueNumber = productsCart.length;
 		$('.cart__items').text(itemsValueNumber);
+	});
+
+	//@TODO
+	// Efetuar lógica para remoção de produtos do carrinho
+	// Efetuar lógica para passar array de produtos via WhatsApp
+
+	$('.js-cart').on('click', function (){
+		createTable(productsCart);
 	})
+
+	// Generate table of items
+	function createTable(data) {
+		let table = $('.table-items');
+
+		for (let i = 0; i < data.length; i++) {
+			let row = `
+				<tr>
+					<td>${data[i].name}</td>
+					<td>R$ ${data[i].price}</td>
+					<td>${data[i].quantity}</td>
+					<td>R$ ${data[i].price * data[i].quantity}</td>
+					<td><a href="#!" title="Remover item" class="btn btn-sm btn-danger"><i class="icon-trash"></i></a></td>
+				</tr>
+			`;
+
+			table.append(row);
+		}
+	}
+
+
 });
