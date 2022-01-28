@@ -187,6 +187,11 @@
 	var showCart = function () {
 
 		$('.cart__floating').on('click', function (event) {
+			//@TODO
+			// Abrir modal com tabela de produtos adicionados ao carrinho
+			// Efetuar lógica para remoção de produtos do carrinho
+			// Adicionar botão finalizar pedido ao modal
+			// Efetuar lógica para passar array de produtos via WhatsApp
 
 			event.preventDefault();
 
@@ -286,24 +291,40 @@ $(document).ready(function () {
 		var value = $(this).attr('data-filter');
 
 		if (value == "all") {
-			//$('.filter').removeClass('hidden');
 			$('.filter').show('1000');
 		} else {
-			//            $('.filter[filter-item="'+value+'"]').removeClass('hidden');
-			//            $(".filter").not('.filter[filter-item="'+value+'"]').addClass('hidden');
 			$(".filter").not('.' + value).hide('3000');
 			$('.filter').filter('.' + value).show('3000');
 
 		}
 	});
 
+	// Array of products in cart
+	const productsCart = [];
+
 	$(".btn-add-cart").on('click', function(e){
 		e.preventDefault();
 
+		// Create product object
+		const product = {
+			id: $(this).parent().parent().parent().parent().attr('data-id'),
+			name: $(this).parent().parent().parent().parent().find('.product-title').html(),
+			price: $(this).parent().parent().parent().parent().find('.product-price').html(),
+		};
+
+		// Validate if product is already in cart
+		if (productsCart.length === 0) {
+			productsCart.push(product);
+		} else {
+			const isAdded = productsCart.find(item => item.id === product.id);
+			if(!isAdded) {
+				productsCart.push(product);
+			}
+		}
+
+		// Change cart button state		
 		$('.cart__items').addClass('active');
-		let itemsValue = $('.cart__items').text();
-		let itemsValueNumber = parseInt(itemsValue);
-		itemsValueNumber++;
+		let itemsValueNumber = productsCart.length;
 		$('.cart__items').text(itemsValueNumber);
 	})
 });
