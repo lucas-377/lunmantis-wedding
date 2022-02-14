@@ -1,6 +1,10 @@
 /*--------------------------------
  CSS Global
 --------------------------------*/ 
+.cart {
+  position: relative;
+}
+
 .cart__floating {
   position: fixed;
   bottom: 80px;
@@ -45,6 +49,14 @@
   color: #fff;
 }
 
+.cart__menu .cart__items {
+  top: -8px;
+  left: unset;
+  font-size: 12px;
+  right: 0px;
+  width: 15px;
+  height: 15px;
+}
 .cart__items {
   position: absolute;
   top: -8px;

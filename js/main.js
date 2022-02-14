@@ -288,6 +288,25 @@ $(document).ready(function () {
 	// Array of products in cart
 	const productsCart = [];
 
+	// Add item
+	$(".btn-add-item").on('click', function(e) {
+		e.preventDefault();
+
+		let oldNumber = parseInt($(this).parent().parent().find('.cart-qty').text());
+		$(this).parent().parent().find('.cart-qty').text(oldNumber+1);
+	});
+
+	// Remove item
+	$(".btn-remove-item").on('click', function(e) {
+		e.preventDefault();
+
+		let oldNumber = parseInt($(this).parent().parent().find('.cart-qty').text());
+
+		if (oldNumber > 0) {
+			$(this).parent().parent().find('.cart-qty').text(oldNumber-1);
+		}
+	});
+
 	// Add product to cart
 	$(".btn-add-cart").on('click', function(e){
 		e.preventDefault();
@@ -295,9 +314,9 @@ $(document).ready(function () {
 		// Create product object
 		const product = {
 			id: $(this).parent().parent().parent().parent().attr('data-id'),
-			name: $(this).parent().parent().parent().parent().find('.product-title').html(),
-			price: $(this).parent().parent().parent().parent().find('.product-price').html(),
-			quantity: 0,
+			name: $(this).parent().parent().parent().parent().find('.product-title').text(),
+			price: $(this).parent().parent().parent().parent().find('.product-price').text().replace('R$', '').replace(',', '.'),
+			quantity: $(this).parent().parent().find('.cart-qty').text(),
 		};
 
 		// Validate if product is already in cart
@@ -305,12 +324,19 @@ $(document).ready(function () {
 			productsCart.push(product);
 		} else {
 			const isAdded = productsCart.find(item => item.id === product.id);
+			let isAddedQty = isAdded.quantity;
+
 			if(!isAdded) {
 				productsCart.push(product);
-			}
+			} 
+			
+			// Update quantity if already added in cart
+			// else {
+			// 	if(isAddedQty != $(this).parent().parent().find('.cart-qty').text()) {
+			// 		isAdded.quantity = isAddedQty;
+			// 	}
+			// }
 		}
-
-		console.log(productsCart);
 
 		// Change cart button state		
 		$('.cart__items').addClass('active');
@@ -319,31 +345,46 @@ $(document).ready(function () {
 	});
 
 	//@TODO
-	// Efetuar lógica para remoção de produtos do carrinho
 	// Efetuar lógica para passar array de produtos via WhatsApp
+	let table = $('.table-items');
+	let list = [];
 
 	$('.js-cart').on('click', function (){
-		createTable(productsCart);
-	})
-
-	// Generate table of items
-	function createTable(data) {
-		let table = $('.table-items');
-
-		for (let i = 0; i < data.length; i++) {
+		let productsList = productsCart.map(function (product) {
 			let row = `
 				<tr>
-					<td>${data[i].name}</td>
-					<td>R$ ${data[i].price}</td>
-					<td>${data[i].quantity}</td>
-					<td>R$ ${data[i].price * data[i].quantity}</td>
-					<td><a href="#!" title="Remover item" class="btn btn-sm btn-danger"><i class="icon-trash"></i></a></td>
+					<td>${product.name}</td>
+					<td>R$ ${product.price}</td>
+					<td>${product.quantity}</td>
+					<td>R$ ${product.price * product.quantity}</td>
+					<td><a href="#!" title="Remover item" class="btn-remove-cart btn btn-sm btn-danger"><i class="icon-trash"></i></a></td>
 				</tr>
 			`;
 
-			table.append(row);
-		}
-	}
+			list.push(row)
+		});
+
+		table.append([...list]);
+	});
+
+	// Generate table of items
+	// function createTable(data) {
+	// 	let table = $('.table-items');
+
+	// 	for (let i = 0; i < data.length; i++) {
+	// 		let row = `
+	// 			<tr>
+	// 				<td>${data[i].name}</td>
+	// 				<td>R$ ${data[i].price}</td>
+	// 				<td>${data[i].quantity}</td>
+	// 				<td>R$ ${data[i].price * data[i].quantity}</td>
+	// 				<td><a href="#!" title="Remover item" class="btn btn-sm btn-danger"><i class="icon-trash"></i></a></td>
+	// 			</tr>
+	// 		`;
+
+	// 		table.append(row);
+	// 	}
+	// }
 
 
 });
