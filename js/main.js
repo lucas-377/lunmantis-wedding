@@ -286,7 +286,7 @@ $(document).ready(function () {
 	});
 
 	// Array of products in cart
-	const productsCart = [];
+	let productsCart = [];
 
 	// Add item
 	$(".btn-add-item").on('click', function(e) {
@@ -324,35 +324,36 @@ $(document).ready(function () {
 			productsCart.push(product);
 		} else {
 			const isAdded = productsCart.find(item => item.id === product.id);
-			let isAddedQty = isAdded.quantity;
 
 			if(!isAdded) {
 				productsCart.push(product);
-			} 
+			}
 			
 			// Update quantity if already added in cart
-			// else {
-			// 	if(isAddedQty != $(this).parent().parent().find('.cart-qty').text()) {
-			// 		isAdded.quantity = isAddedQty;
-			// 	}
-			// }
+			else {
+				if(isAdded.quantity != $(this).parent().parent().find('.cart-qty').text()) {
+					isAdded.quantity = $(this).parent().parent().find('.cart-qty').text();
+				}
+			}
 		}
 
 		// Change cart button state		
 		$('.cart__items').addClass('active');
 		let itemsValueNumber = productsCart.length;
 		$('.cart__items').text(itemsValueNumber);
+		$('.btn-send-order').attr('disabled', false);
 	});
 
-	//@TODO
-	// Efetuar lógica para passar array de produtos via WhatsApp
+	// Generate table of products in cart
 	let table = $('.table-items');
-	let list = [];
 
 	$('.js-cart').on('click', function (){
-		let productsList = productsCart.map(function (product) {
+		table.html('');
+
+		productsCart.map(function (product) {
+			
 			let row = `
-				<tr>
+				<tr data-id="${product.id}">
 					<td>${product.name}</td>
 					<td>R$ ${product.price}</td>
 					<td>${product.quantity}</td>
@@ -361,30 +362,44 @@ $(document).ready(function () {
 				</tr>
 			`;
 
-			list.push(row)
+			table.append(row);
 		});
-
-		table.append([...list]);
 	});
 
-	// Generate table of items
-	// function createTable(data) {
-	// 	let table = $('.table-items');
+	// Remove product from cart
+	$(document).on('click', '.btn-remove-cart', function() {
+		let itemId = $(this).parent().parent().attr('data-id');
 
-	// 	for (let i = 0; i < data.length; i++) {
-	// 		let row = `
-	// 			<tr>
-	// 				<td>${data[i].name}</td>
-	// 				<td>R$ ${data[i].price}</td>
-	// 				<td>${data[i].quantity}</td>
-	// 				<td>R$ ${data[i].price * data[i].quantity}</td>
-	// 				<td><a href="#!" title="Remover item" class="btn btn-sm btn-danger"><i class="icon-trash"></i></a></td>
-	// 			</tr>
-	// 		`;
+		const itemRemoved = productsCart.find(item => item.id === itemId);
 
-	// 		table.append(row);
-	// 	}
-	// }
+		productsCart = productsCart.filter(element => {
+			return element.id != itemRemoved.id;
+		});
 
+		$(this).parent().parent().remove();
 
+		// Change cart button state		
+		let itemsValueNumber = productsCart.length;
+
+		if (itemsValueNumber === 0) {
+			$('.cart__items').removeClass('active');
+			$('.btn-send-order').attr('disabled', true);
+		} else {
+			$('.cart__items').text(itemsValueNumber);
+		}
+	});
+
+	$('.btn-send-order').on('click', function () {
+		let sum = 0.0;
+		let message = "Olá, gostaria de solicitar orçamento para os itens a seguir: ";
+
+		productsCart.map(function(element) {
+			message += `%0A%0AProduto: ${element.name} | Quantidade: ${element.quantity} | Valor: R$ ${element.price} `;
+			sum += parseFloat(element.price * element.quantity);
+		});
+
+		message += `%0A%0A*Total: R$ ${sum}*`;
+
+		window.open(`https://wa.me/+554198845101?text=${message}`);
+	})
 });
